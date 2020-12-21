@@ -1,56 +1,63 @@
-const express= require('express');
-const app= express();
-const port= process.env.PORT || 5000;
+var express= require('express');
 
-const nav = [
-  { link:'/books',name:'Books'},
-  { link:'/authors',name:'Authors'},
-  { link:'/addbook',name:'Add Book'},
-  { link:'/login',name:'Login'},
-  { link:'/signup',name:'Sign Up'}
+const app= new express();
+const port =process.env.PORT || 3000;
+
+app.engine('ejs' , require('ejs').__express)
+
+const nav=[
+    {
+    link:'/book',name:'Books'
+    },
+    {
+        link:'/author',name:'Authors'
+    },
+    {
+        link:'/adminb',name:'Add Book'
+    },
+    {
+        
+        link:'/admina',name:'Add Author'
+        
+    },
+    {
+        link:'/signup',name:'Sign Up'
+    },
+    {
+        link:'/login',name:'Sign In'
+    },
+    
+
+
 ];
 
-const booksRouter= require('./src/routes/bookroute')(nav);
-const authorsRouter= require('./src/routes/authorroute')(nav);
+
+const booksRouter=require('./src/routes/bookroute')(nav);
+const authorsRouter=require('./src/routes/authorroute')(nav);
+const signupRouter=require('./src/routes/signuproute')(nav);
+const loginRouter=require('./src/routes/loginroute')(nav);
+const adminAR=require('./src/routes/adminaroute')(nav);
+const adminbRouter=require('./src/routes/adminbroute')(nav);
+
+
 
 app.use(express.static('./public'));
 app.set('view engine','ejs');
 app.set('views','./src/views');
-
-app.use('/books',booksRouter);
-app.use('/authors',authorsRouter);
-
-
+app.use('/book',booksRouter);
+app.use('/author',authorsRouter);
+app.use('/signup',signupRouter);
+app.use('/login',loginRouter);
+app.use('/admina',adminAR);
+app.use('/adminb',adminbRouter);
+app.engine('ejs' , require('ejs').__express)
 app.get('/',function(req,res){
-  res.render('index',
-  {
-    nav,
-    title:'Library'
-  });
+    res.render("index",
+    {
+        nav,
+        title:'Library'
+    });
 });
 
-app.get('/login',function(req,res){
-  res.render('login',
-  {
-    nav,
-    title:'Login'
-  });
-});
 
-app.get('/signup',function(req,res){
-  res.render('signup',
-  {
-    nav,
-    title:'Sign Up'
-  });
-});
-
-app.get('/addbook',function(req,res){
-  res.render('addbook',
-  {
-    nav,
-    title:'Add Book'
-  });
-});
-
-app.listen(port,()=>{console.log("Running at port "+port);});
+app.listen(port,()=>{console.log("server ready at" +port)});
